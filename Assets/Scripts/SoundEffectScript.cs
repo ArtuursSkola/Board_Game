@@ -30,6 +30,10 @@ public class SoundEffectScript : MonoBehaviour
     public void NameField(){
         audioSource.PlayOneShot(soundEffects[5]);
     }
+    public void FunnySound()
+    {
+        audioSource.PlayOneShot(soundEffects[6]);
+    }
 
 
     // Update is called once per frame
