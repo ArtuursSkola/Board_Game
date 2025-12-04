@@ -8,7 +8,7 @@ public class FadeScript : MonoBehaviour
     Image img;
     Color tempColor;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void Start()
     {
         img = GetComponent<Image>();
         tempColor = img.color;
@@ -17,7 +17,7 @@ public class FadeScript : MonoBehaviour
         StartCoroutine(FadeIn(0.20f));
     }
 
-    IEnumerator FadeIn(float fadeSpeed)
+    public IEnumerator FadeIn(float fadeSpeed)
     {
         for(float a=1f; a>=-0.05; a -=0.05f)
         {
@@ -28,7 +28,7 @@ public class FadeScript : MonoBehaviour
         }
         img.raycastTarget = false;
     }
-    IEnumerator FadeOut(float fadeSpeed)
+    public IEnumerator FadeOut(float fadeSpeed)
     {
     for(float a=0f; a>=1.05; a +=0.05f)
         {
