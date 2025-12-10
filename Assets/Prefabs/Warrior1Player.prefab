@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5101271519267921856}
   - component: {fileID: 714431898277669081}
   - component: {fileID: -8045113540271160801}
+  - component: {fileID: -2154189508516062054}
   m_Layer: 0
   m_Name: Warrior1Player
   m_TagString: Untagged
@@ -127,6 +128,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50304e71b78a3a84e8cdcfd695bec145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NameScript
+--- !u!114 &-2154189508516062054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460793197994232227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8697c9dd979cc0f4588677b343071ecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Combatant
+  combatantName: Fighter
+  maxHp: 20
+  attack: 2
+  defense: 0
+  currentHp: 0
+  ap: 0
+  defended: 0
 --- !u!1 &2702279142920831487
 GameObject:
   m_ObjectHideFlags: 0

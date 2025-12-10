@@ -23,9 +23,12 @@ public class PlayerScript : MonoBehaviour
             playerPrefabs[characterIndex], spawnPoint.transform.position, Quaternion.identity);
         mainCharacter.GetComponent<NameScript>().SetName(
             PlayerPrefs.GetString("PlayerName", "Moe Lester"));
+        Combatant playerCombatant = mainCharacter.GetComponent<Combatant>();
+        if (playerCombatant == null) playerCombatant = mainCharacter.AddComponent<Combatant>();
         
         otherPlayers = new int[PlayerPrefs.GetInt("PlayerCount")];
         string[] nameArray = ReadLinesFromFile(textFileName);
+        Combatant enemyCombatant = null;
 
         for(int i=0; i<otherPlayers.Length-1; i++)
         {
@@ -33,8 +36,23 @@ public class PlayerScript : MonoBehaviour
             index = Random.Range(0, playerPrefabs.Length);
             GameObject otherPlayer = Instantiate(
                 playerPrefabs[index], spawnPoint.transform.position, Quaternion.identity);
-                otherPlayer.GetComponent<NameScript>().SetName(
+            otherPlayer.GetComponent<NameScript>().SetName(
                 nameArray[Random.Range(0, nameArray.Length)]);
+
+            if (enemyCombatant == null)
+            {
+                enemyCombatant = otherPlayer.GetComponent<Combatant>();
+                if (enemyCombatant == null) enemyCombatant = otherPlayer.AddComponent<Combatant>();
+            }
+        }
+
+        // Find the TurnBasedGameManager in scene and wire it up with the spawned combatants
+        TurnBasedGameManager manager = FindFirstObjectByType<TurnBasedGameManager>();
+        CombatUI combatUi = FindFirstObjectByType<CombatUI>();
+        DiceController dice = FindFirstObjectByType<DiceController>();
+        if (manager != null && playerCombatant != null && enemyCombatant != null)
+        {
+            manager.Setup(playerCombatant, enemyCombatant, dice, combatUi);
         }
     }
     string[]ReadLinesFromFile(string fileName){

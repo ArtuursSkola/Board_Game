@@ -193,6 +193,7 @@ GameObject:
   - component: {fileID: 7328112138705099415}
   - component: {fileID: 6669551868691552236}
   - component: {fileID: -5061122915349907280}
+  - component: {fileID: -5043015065327590841}
   m_Layer: 0
   m_Name: FallenAngel2Player
   m_TagString: Untagged
@@ -308,3 +309,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50304e71b78a3a84e8cdcfd695bec145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NameScript
+--- !u!114 &-5043015065327590841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2266113371604579726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8697c9dd979cc0f4588677b343071ecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Combatant
+  combatantName: Fighter
+  maxHp: 20
+  attack: 2
+  defense: 0
+  currentHp: 0
+  ap: 0
+  defended: 0

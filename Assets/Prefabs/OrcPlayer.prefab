@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7313089126056416548}
   - component: {fileID: 5334859548005433997}
   - component: {fileID: 6353034672413762246}
+  - component: {fileID: -86834236118613943}
   m_Layer: 0
   m_Name: OrcPlayer
   m_TagString: Untagged
@@ -127,6 +128,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50304e71b78a3a84e8cdcfd695bec145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NameScript
+--- !u!114 &-86834236118613943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2252840250760157897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8697c9dd979cc0f4588677b343071ecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Combatant
+  combatantName: Fighter
+  maxHp: 20
+  attack: 2
+  defense: 0
+  currentHp: 0
+  ap: 0
+  defended: 0
 --- !u!1 &5943560998646730274
 GameObject:
   m_ObjectHideFlags: 0

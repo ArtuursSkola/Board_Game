@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2369918400848490302}
   - component: {fileID: 1831543272647977806}
   - component: {fileID: 1194137946316226195}
+  - component: {fileID: -7371623298252670339}
   m_Layer: 0
   m_Name: FallenAngel1Player
   m_TagString: Untagged
@@ -127,6 +128,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50304e71b78a3a84e8cdcfd695bec145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NameScript
+--- !u!114 &-7371623298252670339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 972920073116886293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8697c9dd979cc0f4588677b343071ecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Combatant
+  combatantName: Fighter
+  maxHp: 20
+  attack: 2
+  defense: 0
+  currentHp: 0
+  ap: 0
+  defended: 0
 --- !u!1 &3571315604977881102
 GameObject:
   m_ObjectHideFlags: 0
