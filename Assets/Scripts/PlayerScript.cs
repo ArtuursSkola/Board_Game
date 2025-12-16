@@ -11,7 +11,6 @@ public class PlayerScript : MonoBehaviour
     public GameObject[] playerPrefabs;
     int characterIndex;
     public GameObject spawnPoint;
-    int[] otherPlayers;
     int index;
     private const string textFileName = "PlayerName";
 
@@ -19,40 +18,49 @@ public class PlayerScript : MonoBehaviour
     void Start()
     {
         characterIndex = PlayerPrefs.GetInt("SelectedCharacter", 0);
+        List<GameObject> spawnedPlayers = new List<GameObject>();
+
         GameObject mainCharacter = Instantiate(
             playerPrefabs[characterIndex], spawnPoint.transform.position, Quaternion.identity);
-        mainCharacter.GetComponent<NameScript>().SetName(
-            PlayerPrefs.GetString("PlayerName", "Moe Lester"));
-        Combatant playerCombatant = mainCharacter.GetComponent<Combatant>();
-        if (playerCombatant == null) playerCombatant = mainCharacter.AddComponent<Combatant>();
-        
-        otherPlayers = new int[PlayerPrefs.GetInt("PlayerCount")];
-        string[] nameArray = ReadLinesFromFile(textFileName);
-        Combatant enemyCombatant = null;
+        string playerName = PlayerPrefs.GetString("PlayerName", "Player");
+        string displayName = playerName + " (You)";
+        mainCharacter.name = displayName; // prevents Unity's default (Clone) name showing
+        mainCharacter.GetComponent<NameScript>().SetName(displayName);
+        spawnedPlayers.Add(mainCharacter);
 
-        for(int i=0; i<otherPlayers.Length-1; i++)
+        int botCount = Mathf.Max(0, PlayerPrefs.GetInt("PlayerCount") - 1);
+        List<string> availableNames = new List<string>(ReadLinesFromFile(textFileName));
+        ShuffleNames(availableNames);
+
+        for(int i = 0; i < botCount; i++)
         {
             spawnPoint.transform.position += new Vector3(0.2f, 0, 0.08f);
             index = Random.Range(0, playerPrefabs.Length);
             GameObject otherPlayer = Instantiate(
                 playerPrefabs[index], spawnPoint.transform.position, Quaternion.identity);
-            otherPlayer.GetComponent<NameScript>().SetName(
-                nameArray[Random.Range(0, nameArray.Length)]);
 
-            if (enemyCombatant == null)
+            string botName;
+            if (availableNames.Count > 0)
             {
-                enemyCombatant = otherPlayer.GetComponent<Combatant>();
-                if (enemyCombatant == null) enemyCombatant = otherPlayer.AddComponent<Combatant>();
+                botName = availableNames[0];
+                availableNames.RemoveAt(0);
             }
+            else
+            {
+                botName = "Bot " + (i + 1);
+            }
+
+            otherPlayer.name = botName;
+            otherPlayer.GetComponent<NameScript>().SetName(botName);
+
+            spawnedPlayers.Add(otherPlayer);
         }
 
-        // Find the TurnBasedGameManager in scene and wire it up with the spawned combatants
-        TurnBasedGameManager manager = FindFirstObjectByType<TurnBasedGameManager>();
-        CombatUI combatUi = FindFirstObjectByType<CombatUI>();
-        DiceController dice = FindFirstObjectByType<DiceController>();
-        if (manager != null && playerCombatant != null && enemyCombatant != null)
+        // Wire into the board game manager
+        BoardGameManager boardManager = FindFirstObjectByType<BoardGameManager>();
+        if (boardManager != null)
         {
-            manager.Setup(playerCombatant, enemyCombatant, dice, combatUi);
+            boardManager.SetupPlayers(spawnedPlayers);
         }
     }
     string[]ReadLinesFromFile(string fileName){
@@ -65,6 +73,15 @@ public class PlayerScript : MonoBehaviour
         }else{
             Debug.LogWarning("File not found: " + fileName);
             return new string[0];
+        }
+    }
+
+    void ShuffleNames(List<string> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            int swapIndex = Random.Range(i, list.Count);
+            (list[i], list[swapIndex]) = (list[swapIndex], list[i]);
         }
     }
 }

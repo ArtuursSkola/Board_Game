@@ -7817,7 +7817,7 @@ MonoBehaviour:
   - {fileID: 556444604}
   - {fileID: 1217589285}
   inputField: {fileID: 1040371624}
-  playerCount: 2
+  playerCount: 4
   sceneChanger: {fileID: 1478608696}
 --- !u!114 &1478608698
 MonoBehaviour:

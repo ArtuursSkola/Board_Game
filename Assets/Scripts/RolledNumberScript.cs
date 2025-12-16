@@ -14,7 +14,6 @@ public class RolledNumberScript : MonoBehaviour
         diceRollScript = FindFirstObjectByType<DiceRollScript>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(diceRollScript != null)
