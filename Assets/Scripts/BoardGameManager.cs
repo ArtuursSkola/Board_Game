@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class BoardGameManager : MonoBehaviour
 {
@@ -46,6 +49,10 @@ public class BoardGameManager : MonoBehaviour
     public string homeSceneName = "MainMenu";
     [Tooltip("Board index (0-based) that counts as the final winning square.")]
     public int winningSquareIndex = 29; // square30 in 0-based indexing
+    [Tooltip("Optional leaderboard handler to record wins.")]
+    public LeaderboardManager leaderboard;
+    [Tooltip("Filename for saving wins as plain text.")]
+    public string textLeaderboardFileName = "LeaderboardName.txt";
     [Header("Special Tiles")]
     [Tooltip("Prefab or object to show as a jumpscare when landing on a scare tile.")]
     public GameObject jumpScareObject;
@@ -721,9 +728,62 @@ public class BoardGameManager : MonoBehaviour
                 int throws = (throwCounts != null && playerIndex < throwCounts.Length) ? throwCounts[playerIndex] : 0;
                 scoreText.text = "Throws: " + throws + "; Time: " + timeStr + " sec";
             }
+            SaveWinToLeaderboard(playerIndex);
             return true;
         }
         return false;
+    }
+
+    private void SaveWinToLeaderboard(int playerIndex)
+    {
+        if (leaderboard == null) return;
+        string winnerName = players != null && playerIndex >= 0 && playerIndex < players.Count ? players[playerIndex].name : "Unknown";
+        bool isBot = isHuman != null && playerIndex >= 0 && playerIndex < isHuman.Count ? !isHuman[playerIndex] : false;
+        int throws = (throwCounts != null && playerIndex < throwCounts.Length) ? throwCounts[playerIndex] : 0;
+        int score = CalculateScoreFromThrows(throws);
+        leaderboard.AddEntry(winnerName, score, isBot, throws, Time.time - gameStartTime);
+        AppendWinToTextFile(winnerName, isBot, throws, score, Time.time - gameStartTime);
+    }
+
+    private int CalculateScoreFromThrows(int throws)
+    {
+        // Best score achieved at 5 throws => 10000; more throws reduce score proportionally.
+        if (throws <= 0) return 0;
+        const float bestThrows = 5f;
+        const int bestScore = 10000;
+        float factor = bestThrows / Mathf.Max(throws, 1);
+        int score = Mathf.RoundToInt(bestScore * factor);
+        return Mathf.Clamp(score, 1, bestScore);
+    }
+
+    private void AppendWinToTextFile(string winnerName, bool isBot, int throws, int score, float elapsedSeconds)
+    {
+        try
+        {
+            string timeStr = string.Format("{0:00}:{1:00}", Mathf.Floor(elapsedSeconds / 60f), Mathf.Floor(elapsedSeconds % 60f));
+            string line = string.Format("{0}{1}, {2} Moves, {3} sec, Score: {4}",
+                winnerName,
+                isBot ? " (bot)" : string.Empty,
+                throws,
+                timeStr,
+                score);
+
+            // Primary save in persistent data path
+            string path = Path.Combine(Application.persistentDataPath, textLeaderboardFileName);
+            File.AppendAllText(path, line + Environment.NewLine);
+
+#if UNITY_EDITOR
+            // Mirror into Assets/Resources so you can inspect it in the Editor if desired
+            string resourcesDir = Path.Combine(Application.dataPath, "Resources");
+            if (!Directory.Exists(resourcesDir)) Directory.CreateDirectory(resourcesDir);
+            string editorPath = Path.Combine(resourcesDir, textLeaderboardFileName);
+            File.AppendAllText(editorPath, line + Environment.NewLine);
+#endif
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning("Failed to append win to text leaderboard: " + ex.Message);
+        }
     }
 
     // UI buttons

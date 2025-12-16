@@ -27,8 +27,8 @@ public class SideDetectScript : MonoBehaviour
 
     void Awake()
     {
-        diceRollScript = FindObjectOfType<DiceRollScript>();
-        diceController = FindFirstObjectByType<DiceController>();
+		diceRollScript = FindFirstObjectByType<DiceRollScript>();
+		diceController = FindFirstObjectByType<DiceController>();
         lastPos = transform.position;
     }
 

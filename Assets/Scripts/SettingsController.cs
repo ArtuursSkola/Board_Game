@@ -102,7 +102,7 @@ public class SettingsController : MonoBehaviour
 
         for (int i = 0; i < availableResolutions.Length; i++)
         {
-            string option = availableResolutions[i].width + " x " + availableResolutions[i].height + " @ " + availableResolutions[i].refreshRate + "Hz";
+            string option = FormatResolution(availableResolutions[i]);
 
             if (!options.Contains(option))
                 options.Add(option);
@@ -133,7 +133,7 @@ public class SettingsController : MonoBehaviour
 
         for (int i = 0; i < availableResolutions.Length; i++)
         {
-            string option = availableResolutions[i].width + " x " + availableResolutions[i].height + " @ " + availableResolutions[i].refreshRate + "Hz";
+            string option = FormatResolution(availableResolutions[i]);
             if (!seen.Contains(option))
             {
                 seen.Add(option);
@@ -145,11 +145,11 @@ public class SettingsController : MonoBehaviour
         Resolution res = availableResolutions[mapping[dropdownIndex]];
         bool fullscreen = fullscreenToggle != null ? fullscreenToggle.isOn : Screen.fullScreen;
 
-        Screen.SetResolution(res.width, res.height, fullscreen, res.refreshRate);
+        FullScreenMode mode = fullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
+        Screen.SetResolution(res.width, res.height, mode, res.refreshRateRatio);
         PlayerPrefs.SetInt(PREF_RES_INDEX, dropdownIndex);
     }
 
-    // -------------------- FULLSCREEN ----------------------
     void InitFullscreen()
     {
         bool isFullscreen = PlayerPrefs.GetInt(PREF_FULLSCREEN, Screen.fullScreen ? 1 : 0) == 1;
@@ -177,5 +177,11 @@ public class SettingsController : MonoBehaviour
     {
         if (settingsPanel != null) settingsPanel.SetActive(false);
         if (buttonsPanel != null) buttonsPanel.SetActive(true);
+    }
+
+    private string FormatResolution(Resolution res)
+    {
+        float hz = (float)res.refreshRateRatio.value;
+        return res.width + " x " + res.height + " @ " + Mathf.RoundToInt(hz) + "Hz";
     }
 }
