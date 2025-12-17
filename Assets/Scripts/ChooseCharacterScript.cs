@@ -1,11 +1,14 @@
 using UnityEngine;
+using TMPro;
 
 public class ChooseCharacterScript : MonoBehaviour
 {
     public GameObject[] characters;
     int characterIndex;
 
-    public GameObject inputField;
+    [Header("Inputs")]
+    public GameObject inputField; // Name field (existing)
+    public TMP_InputField playerCountField; // New: number of players 2-6
     string characterName;
     public int playerCount = 2;
     public SceneChanger sceneChanger;
@@ -48,16 +51,32 @@ public class ChooseCharacterScript : MonoBehaviour
 
     public void Play()
     {
-        characterName = inputField.GetComponent<TMPro.TMP_InputField>().text;
+        var nameInput = inputField.GetComponent<TMP_InputField>();
+        characterName = nameInput != null ? nameInput.text : string.Empty;
+
+        // Validate player count from input field (default to current playerCount)
+        int desiredCount = playerCount;
+        if (playerCountField != null)
+        {
+            if (!int.TryParse(playerCountField.text, out desiredCount) || desiredCount < 2 || desiredCount > 6)
+            {
+                // Reject invalid input; reselect the field and early-return
+                playerCountField.text = "";
+                playerCountField.ActivateInputField();
+                return;
+            }
+        }
 
         if (characterName.Length >= 3)
         {
             PlayerPrefs.SetInt("SelectedCharacter", characterIndex);
             PlayerPrefs.SetString("PlayerName", characterName);
-            PlayerPrefs.SetInt("PlayerCount", playerCount);
+            PlayerPrefs.SetInt("PlayerCount", desiredCount);
             StartCoroutine(sceneChanger.Delay("play", characterIndex, characterName));
-
-        }else 
-        inputField.GetComponent<TMPro.TMP_InputField>().Select();
+        }
+        else
+        {
+            if (nameInput != null) nameInput.Select();
+        }
     }
 }

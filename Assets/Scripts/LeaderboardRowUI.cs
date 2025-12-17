@@ -10,6 +10,19 @@ public class LeaderboardRowUI : MonoBehaviour
     public void SetData(int rank, string line)
     {
         if (rankText != null) rankText.text = "#" + rank;
+        if (lineText == null)
+        {
+            // Fallback: grab the first TMP child that is not the rank text
+            var tmps = GetComponentsInChildren<TextMeshProUGUI>(true);
+            foreach (var tmp in tmps)
+            {
+                if (tmp != null && tmp != rankText)
+                {
+                    lineText = tmp;
+                    break;
+                }
+            }
+        }
         if (lineText != null) lineText.text = line;
     }
 }

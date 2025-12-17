@@ -39,6 +39,7 @@ public class LeaderboardManager : MonoBehaviour
     void Awake()
     {
         Load();
+        NormalizeEntries();
         RefreshUI();
         if (leaderboardPanel != null) leaderboardPanel.SetActive(false);
     }
@@ -150,8 +151,40 @@ public class LeaderboardManager : MonoBehaviour
         return Path.Combine(Application.persistentDataPath, fileName);
     }
 
+    private void NormalizeEntries()
+    {
+        bool changed = false;
+        const float bestThrows = 5f;
+        const int bestScore = 10000;
+
+        for (int i = 0; i < entries.Count; i++)
+        {
+            var e = entries[i];
+
+            if (e.moves <= 0 && e.score > 0)
+            {
+                // Derive approximate moves from score using the same formula as BoardGameManager
+                float throwsFloat = (bestThrows * bestScore) / Mathf.Max(1, e.score);
+                e.moves = Mathf.Max(1, Mathf.RoundToInt(throwsFloat));
+                changed = true;
+            }
+
+            if (e.elapsedSeconds < 0)
+            {
+                e.elapsedSeconds = 0;
+                changed = true;
+            }
+        }
+
+        if (changed)
+        {
+            Save();
+        }
+    }
+
     private string FormatElapsed(float seconds)
     {
+        if (seconds <= 0f) return "--:-- sec";
         float clamped = Mathf.Max(0f, seconds);
         int mins = Mathf.FloorToInt(clamped / 60f);
         int secs = Mathf.FloorToInt(clamped % 60f);
