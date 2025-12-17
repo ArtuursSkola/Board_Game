@@ -56,6 +56,23 @@
 - Board Scene: roll dice, move, resolve tiles and battles, win UI, and save results.
 - Leaderboard Scene: scrollable view of past wins.
 
+## Screenshots
+
+### Main Menu
+![Main Menu](Assets/Images/pc1.png)
+
+### Settings
+![Settings](Assets/Images/pc2.png)
+
+### Leaderboard
+![Leaderboard](Assets/Images/pc3.png)
+
+### Game Screen
+![Game Screen](Assets/Images/pc4.png)
+
+### Win Window
+![Win Window](Assets/Images/pc5.png)
+
 ## Quick Notes
 - If a TMP input is empty/invalid (name too short or player count outside 2–6), play is blocked until fixed.
 - Bots draw names from `Resources/PlayerName.txt`; if depleted, they are named "Bot N".

@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class BoardGameManager : MonoBehaviour
@@ -41,6 +42,10 @@ public class BoardGameManager : MonoBehaviour
     [Header("Win UI")]
     [Tooltip("Panel shown when someone wins.")]
     public GameObject winPanel;
+    [Tooltip("Button on the win panel to reset the game.")]
+    public Button resetButton;
+    [Tooltip("Button on the win panel to return to the main menu.")]
+    public Button leaveButton;
     [Tooltip("Text showing who won (e.g., 'The winner is ...').")]
     public TextMeshProUGUI winOrLoseText;
     [Tooltip("Text showing stats like throws and time.")]
@@ -105,6 +110,9 @@ public class BoardGameManager : MonoBehaviour
     {
         if (dice != null) dice.OnRolled -= HandleRoll;
         if (instance == this) instance = null;
+
+        if (resetButton != null) resetButton.onClick.RemoveListener(OnResetGameButton);
+        if (leaveButton != null) leaveButton.onClick.RemoveListener(OnHomeButton);
     }
 
     public void SetupPlayers(List<GameObject> spawnedPlayers)
@@ -160,6 +168,18 @@ public class BoardGameManager : MonoBehaviour
         {
             positions[i] = 0;
             MovePieceToSquare(i, 0);
+        }
+
+        // Hook up win panel buttons
+        if (resetButton != null)
+        {
+            resetButton.onClick.RemoveAllListeners(); // Clear existing to prevent duplicates
+            resetButton.onClick.AddListener(OnResetGameButton);
+        }
+        if (leaveButton != null)
+        {
+            leaveButton.onClick.RemoveAllListeners(); // Clear existing to prevent duplicates
+            leaveButton.onClick.AddListener(OnHomeButton);
         }
 
         StartGame();
@@ -786,10 +806,46 @@ public class BoardGameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Resets the game to its initial state without reloading the scene.
+    /// </summary>
+    public void ResetGame()
+    {
+        if (winPanel != null)
+        {
+            winPanel.SetActive(false);
+        }
+
+        if (players != null && players.Count > 0)
+        {
+            // Reset player positions and stats
+            positions = new int[players.Count];
+            throwCounts = new int[players.Count];
+            for (int i = 0; i < players.Count; i++)
+            {
+                positions[i] = 0;
+                throwCounts[i] = 0;
+                if (moveRoutines != null && moveRoutines[i] != null)
+                {
+                    StopCoroutine(moveRoutines[i]);
+                    moveRoutines[i] = null;
+                }
+                MovePieceToSquare(i, 0);
+            }
+        }
+
+        // Reset game state
+        gameOver = false;
+        started = false; // Will be set to true in StartGame
+
+        // Restart the game logic
+        StartGame();
+    }
+
     // UI buttons
     public void OnResetGameButton()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        ResetGame();
     }
 
     public void OnHomeButton()

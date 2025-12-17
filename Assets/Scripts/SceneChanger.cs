@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class SceneChanger : MonoBehaviour
 {
@@ -27,13 +30,14 @@ public class SceneChanger : MonoBehaviour
            yield return fadeScript.FadeOut(0.05f);
            PlayerPrefs.DeleteAll();
 
-           if(UnityEditor.EditorApplication.isPlaying)
+#if UNITY_EDITOR
+           if (EditorApplication.isPlaying)
            {
-            UnityEditor.EditorApplication.isPlaying = false;
-
-           }else{
-            Application.Quit();
+               EditorApplication.isPlaying = false;
            }
+#else
+           Application.Quit();
+#endif
         
         }else if(string.Equals(command, "play", System.StringComparison.OrdinalIgnoreCase))
         {

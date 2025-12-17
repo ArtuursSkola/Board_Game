@@ -121,6 +121,8 @@ public class SettingsController : MonoBehaviour
             savedIndex = Mathf.Clamp(savedIndex, 0, options.Count - 1);
             resolutionDropdown.value = savedIndex;
             resolutionDropdown.RefreshShownValue();
+
+            resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
         }
     }
 
@@ -153,7 +155,11 @@ public class SettingsController : MonoBehaviour
     void InitFullscreen()
     {
         bool isFullscreen = PlayerPrefs.GetInt(PREF_FULLSCREEN, Screen.fullScreen ? 1 : 0) == 1;
-        if (fullscreenToggle != null) fullscreenToggle.isOn = isFullscreen;
+        if (fullscreenToggle != null)
+        {
+            fullscreenToggle.isOn = isFullscreen;
+            fullscreenToggle.onValueChanged.AddListener(OnFullscreenToggleChanged);
+        }
     }
 
     public void OnFullscreenToggleChanged(bool isFullscreen)
