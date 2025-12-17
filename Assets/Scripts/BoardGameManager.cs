@@ -798,6 +798,7 @@ public class BoardGameManager : MonoBehaviour
             if (!Directory.Exists(resourcesDir)) Directory.CreateDirectory(resourcesDir);
             string editorPath = Path.Combine(resourcesDir, textLeaderboardFileName);
             File.AppendAllText(editorPath, line + Environment.NewLine);
+            UnityEditor.AssetDatabase.Refresh();
 #endif
         }
         catch (Exception ex)
